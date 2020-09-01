@@ -1,27 +1,25 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class tag extends Model {
+  class joinTableLikes extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      tag.belongsToMany(models.dog);
+      joinTableLikes.belongsTo(models.user, { as: "id" });
+      joinTableLikes.belongsTo(models.dog, { as: "id" });
     }
   }
-  tag.init(
+  joinTableLikes.init(
     {
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      liked: DataTypes.BOOLEAN,
     },
     {
       sequelize,
-      modelName: "tag",
+      modelName: "joinTableLikes",
     }
   );
-  return tag;
+  return joinTableLikes;
 };

@@ -1,21 +1,15 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("dogs", {
+    await queryInterface.createTable("joinTableLikes", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-
-      tagLine: {
-        type: Sequelize.TEXT,
-        allowNull: false,
+      liked: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
@@ -28,6 +22,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("dogs");
+    await queryInterface.dropTable("joinTableLikes");
   },
 };

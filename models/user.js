@@ -8,7 +8,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      user.belongsToMany(models.dog, {
+        through: "joinTableLikes",
+        as: "liked",
+        foreignKey: "dogId",
+      });
+
+      user.belongsTo(model.dog, { as: "owner" });
     }
   }
   user.init(
@@ -19,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       userName: {
         type: DataTypes.STRING,
-        allowNull: false,
         unique: true,
+        allowNull: false,
       },
       email: {
         type: DataTypes.STRING,

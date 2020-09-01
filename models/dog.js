@@ -8,17 +8,21 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      dog.belongsToMany(models.user, {
+        through: "joinTableLikes",
+        as: "userId",
+        foreignKey: "dogId",
+      });
+      dog.belongsTo(model.user, {
+        as: "owner",
+      });
+      dog.hasMany(models.tag);
     }
   }
   dog.init(
     {
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
-      },
-      owner: {
-        type: DataTypes.INTEGER,
         allowNull: false,
       },
       tagLine: {
