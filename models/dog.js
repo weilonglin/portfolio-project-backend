@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      gender: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      imageUrl: DataTypes.STRING,
       tagLine: {
         type: DataTypes.TEXT,
         allowNull: false,

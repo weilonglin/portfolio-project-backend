@@ -12,7 +12,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-
+      gender: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      imageUrl: Sequelize.STRING,
       tagLine: {
         type: Sequelize.TEXT,
         allowNull: false,

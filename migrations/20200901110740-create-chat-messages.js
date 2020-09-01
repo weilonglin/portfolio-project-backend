@@ -8,10 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      recipientId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
       message: {
         type: Sequelize.TEXT,
         allowNull: false,

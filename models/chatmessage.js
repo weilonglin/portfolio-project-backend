@@ -13,10 +13,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   chatMessage.init(
     {
-      recipientId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
       message: {
         type: DataTypes.TEXT,
         allowNull: false,
