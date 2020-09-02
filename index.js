@@ -1,13 +1,29 @@
+const { ApolloServer, gql } = require("apollo-server-express");
+
 const express = require("express");
 const app = express();
 const PORT = 4000;
-
+const corsMiddleWare = require("cors");
+const models = require("./models");
 const User = require("./models").user;
 const Dog = require("./models").dog;
 const Chat = require("./models").chatMessage;
 const Tag = require("./models").tag;
 
+const typeDefs = require("./schema");
+const resolvers = require("./resolvers");
+
 app.use(express.json());
+
+app.use(corsMiddleWare());
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: { models },
+});
+
+server.applyMiddleware({ app });
 
 app.get("/:userId", async (req, res) => {
   const userId = parseInt(req.params.userId);
@@ -46,11 +62,6 @@ app.get("/chat/:userId", async (req, res) => {
   } else {
     res.send(user);
   }
-});
-
-app.get("/dogs", async (req, res) => {
-  const dogs = await Dog.findAll({ include: [{ model: User, as: "owner" }] });
-  res.send(dogs);
 });
 
 app.listen(PORT, () => {
