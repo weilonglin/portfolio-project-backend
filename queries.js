@@ -37,5 +37,5 @@ const findUser = async () => {
   }
 };
 
-// findUser();
-dogWithOwner();
+findUser();
+// dogWithOwner();

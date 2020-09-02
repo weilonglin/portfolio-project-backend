@@ -20,6 +20,7 @@ app.get("/:userId", async (req, res) => {
           {
             model: Tag,
             as: "tagName",
+            attributes: ["name", "id"],
           },
         ],
       },
