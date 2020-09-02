@@ -3,71 +3,95 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      "tags",
+      "joinTableTags",
       [
         {
-          name: "cute",
-
+          tagId: 1,
+          dogId: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "big",
-
+          tagId: 1,
+          dogId: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "small",
-
+          tagId: 2,
+          dogId: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "kids",
-
+          tagId: 3,
+          dogId: 4,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "long walks",
-
+          tagId: 10,
+          dogId: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "good with everyone",
-
+          tagId: 9,
+          dogId: 3,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "crazy",
-
+          tagId: 4,
+          dogId: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "listens",
-
+          tagId: 2,
+          dogId: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "good with other dogs",
-
+          tagId: 1,
+          dogId: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "male",
-
+          tagId: 11,
+          dogId: 5,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          name: "female",
-
+          tagId: 1,
+          dogId: 5,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          tagId: 9,
+          dogId: 5,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          tagId: 2,
+          dogId: 3,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          tagId: 6,
+          dogId: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          tagId: 10,
+          dogId: 3,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -77,6 +101,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete("tags", null, {});
+    await queryInterface.bulkDelete("joinTableTags", null, {});
   },
 };

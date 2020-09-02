@@ -9,12 +9,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       user.belongsToMany(models.dog, {
-        through: "joinTableLikes",
-        as: "liked",
+        through: "joinTableLike",
+        as: "likes",
         foreignKey: "dogId",
       });
 
-      user.belongsTo(model.dog, { as: "owner" });
+      user.hasMany(models.dog, { as: "owner", foreignKey: "ownerId" });
+
+      user.hasMany(models.chatMessage, { as: "sender", foreignKey: "userId" });
+      user.hasMany(models.chatMessage, {
+        as: "recipient",
+        foreignKey: "recipientId",
+      });
     }
   }
   user.init(

@@ -10,13 +10,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       dog.belongsToMany(models.user, {
         through: "joinTableLikes",
-        as: "userId",
+        as: "likes",
         foreignKey: "dogId",
       });
-      dog.belongsTo(model.user, {
-        as: "owner",
+
+      dog.belongsTo(models.user, { as: "owner" });
+
+      dog.belongsToMany(models.tag, {
+        as: "tagName",
+        through: "joinTableTags",
+        foreignKey: "dogId",
       });
-      dog.hasMany(models.tag);
     }
   }
   dog.init(
@@ -33,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
       tagLine: {
         type: DataTypes.TEXT,
         allowNull: false,
+      },
+      ownerId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
     },
     {

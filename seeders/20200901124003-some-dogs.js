@@ -13,7 +13,7 @@ module.exports = {
           tagLine: "Good boy, always and ever.",
           createdAt: new Date(),
           updatedAt: new Date(),
-          owner: 1,
+          ownerId: 1,
         },
         {
           name: "Goldy",
@@ -23,7 +23,7 @@ module.exports = {
           tagLine: "Blonde, fit and need food",
           createdAt: new Date(),
           updatedAt: new Date(),
-          owner: 2,
+          ownerId: 2,
         },
         {
           name: "Wouf",
@@ -33,7 +33,7 @@ module.exports = {
           tagLine: "Smmmooooooooooooooooooooooofh criminal",
           createdAt: new Date(),
           updatedAt: new Date(),
-          owner: 3,
+          ownerId: 3,
         },
         {
           name: "Wouf",
@@ -43,7 +43,7 @@ module.exports = {
           tagLine: "Love enjoying the grass and sun",
           createdAt: new Date(),
           updatedAt: new Date(),
-          owner: 4,
+          ownerId: 4,
         },
         {
           name: "HikeGurl",
@@ -53,7 +53,7 @@ module.exports = {
           tagLine: "I like to walk, spring and be funny",
           createdAt: new Date(),
           updatedAt: new Date(),
-          owner: 5,
+          ownerId: 5,
         },
       ],
       {}
