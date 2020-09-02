@@ -10,6 +10,8 @@ const typeDefs = gql`
     address: String
     city: String
     dogs: [Dog]
+    sender: [ChatMessage]
+    recipient: [ChatMessage]
   }
 
   type Dog {
@@ -18,13 +20,20 @@ const typeDefs = gql`
     gender: String
     imageUrl: String
     tagLine: String
-
     owner: User
+  }
+
+  type ChatMessage {
+    id: Int
+    message: String
+    userId: Int
+    recipientId: Int
   }
 
   type Query {
     user(id: Int!): User
     dog(id: Int!): Dog
+    chatMessage(id: Int!): ChatMessage
   }
 `;
 
