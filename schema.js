@@ -23,6 +23,19 @@ const typeDefs = gql`
     imageUrl: String
     tagLine: String
     owner: User
+    tag: [Tag]
+  }
+
+  type Tag {
+    id: Int
+    name: String
+  }
+
+  type JoinTableTag {
+    id: Int
+    tagId: Int
+    dogId: Int
+    tagName: [Tag]
   }
 
   type JoinTableLike {
@@ -39,17 +52,6 @@ const typeDefs = gql`
     recipientId: Int
   }
 
-  type Tag {
-    id: Int
-    name: String
-    tagName: JoinTableTag
-  }
-
-  type JoinTableTag {
-    id: Int
-    tagId: Int
-    dogId: Int
-  }
   type Query {
     user(id: Int!): User
     dog(id: Int!): Dog

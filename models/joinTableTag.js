@@ -8,8 +8,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      joinTableTag.belongsTo(models.tag);
-      joinTableTag.belongsTo(models.dog);
+      joinTableTag.belongsTo(models.tag, {
+        foreignKey: "tagId",
+      });
+      joinTableTag.belongsTo(models.dog, { foreignKey: "dogId" });
     }
   }
   joinTableTag.init(

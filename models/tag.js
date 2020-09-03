@@ -9,8 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       tag.belongsToMany(models.dog, {
-        as: "tagName",
-        through: "joinTableTag",
+        through: "joinTableTags",
         foreignKey: "tagId",
       });
     }
