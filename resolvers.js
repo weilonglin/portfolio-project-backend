@@ -26,19 +26,26 @@ const resolvers = {
     async recipient(message) {
       return message.getRecipient();
     },
-    async dogLike(user) {
-      return user.getLikes({ joinTableAttributes: ["liked"] });
+    async dogLike(dog) {
+      return dog.getDogLike();
     },
+    async userLike(dog) {
+      return dog.getUserLike();
+    },
+    // async dogLike(user) {
+    //   return user.getLikes({ joinTableAttributes: ["liked"] });
+    // },
   },
   Dog: {
     async owner(user) {
       return user.getOwner();
     },
-    async userLike(dog) {
-      const x = await dog.getLikes({ joinTableAttributes: ["liked"] });
-      console.log("XXXXXXXX", x);
-      return x;
-    },
+
+    // async userLike(dog) {
+    //   const x = await dog.getLikes({ joinTableAttributes: ["liked"] });
+    //   console.log("XXXXXXXX", x);
+    //   return x;
+    // },
   },
 };
 

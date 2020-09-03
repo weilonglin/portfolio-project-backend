@@ -12,7 +12,8 @@ const typeDefs = gql`
     dogs: [Dog]
     sender: [ChatMessage]
     recipient: [ChatMessage]
-    dogLike: [Dog]
+    dogLike: [JoinTableLike]
+    userLike: [JoinTableLike]
   }
 
   type Dog {
@@ -22,7 +23,6 @@ const typeDefs = gql`
     imageUrl: String
     tagLine: String
     owner: User
-    userLike: [User]
   }
 
   type JoinTableLike {
