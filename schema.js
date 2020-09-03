@@ -12,6 +12,7 @@ const typeDefs = gql`
     dogs: [Dog]
     sender: [ChatMessage]
     recipient: [ChatMessage]
+    dogLike: [Dog]
   }
 
   type Dog {
@@ -21,6 +22,14 @@ const typeDefs = gql`
     imageUrl: String
     tagLine: String
     owner: User
+    userLike: [User]
+  }
+
+  type JoinTableLike {
+    id: Int
+    liked: Boolean
+    userId: Int
+    dogId: Int
   }
 
   type ChatMessage {
@@ -30,10 +39,24 @@ const typeDefs = gql`
     recipientId: Int
   }
 
+  type Tag {
+    id: Int
+    name: String
+    tagName: JoinTableTag
+  }
+
+  type JoinTableTag {
+    id: Int
+    tagId: Int
+    dogId: Int
+  }
   type Query {
     user(id: Int!): User
     dog(id: Int!): Dog
     chatMessage(id: Int!): ChatMessage
+    joinTableLike(id: Int!): JoinTableLike
+    tag(id: Int): Tag
+    joinTableTag(id: Int): JoinTableTag
   }
 `;
 

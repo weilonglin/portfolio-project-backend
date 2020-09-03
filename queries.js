@@ -2,6 +2,7 @@ const User = require("./models").user;
 const Dog = require("./models").dog;
 const Chat = require("./models").chatMessage;
 const Tag = require("./models").tag;
+const Likes = require("./models").joinTableLike;
 
 const dogWithOwner = async () => {
   try {
@@ -37,5 +38,16 @@ const findUser = async () => {
   }
 };
 
-findUser();
+const joinTableLikes = async () => {
+  try {
+    const likes = await Likes.findAll();
+    console.log("likes", likes);
+  } catch (e) {
+    console.log("error", e);
+  }
+};
+
+// findUser();
 // dogWithOwner();
+
+joinTableLikes();

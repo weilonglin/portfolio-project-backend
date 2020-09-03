@@ -1,4 +1,5 @@
 const chatmessage = require("./models/chatmessage");
+const joinTableLike = require("./models/joinTableLike");
 
 const resolvers = {
   Query: {
@@ -11,22 +12,32 @@ const resolvers = {
     async chatMessage(root, { id }, { models }) {
       return models.chatMessage.findBy();
     },
+    async joinTableLike(root, { id }, { models }) {
+      return models.joinTableLike.findBy();
+    },
   },
   User: {
     async dogs(dog) {
       return dog.getOwner();
     },
     async sender(chatMessage) {
-      console.log("do i get here");
       return chatMessage.getSender();
     },
     async recipient(message) {
       return message.getRecipient();
     },
+    async dogLike(user) {
+      return user.getLikes({ joinTableAttributes: ["liked"] });
+    },
   },
   Dog: {
     async owner(user) {
       return user.getOwner();
+    },
+    async userLike(dog) {
+      const x = await dog.getLikes({ joinTableAttributes: ["liked"] });
+      console.log("XXXXXXXX", x);
+      return x;
     },
   },
 };
