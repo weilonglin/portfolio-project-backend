@@ -11,6 +11,9 @@ const resolvers = {
     async dog(root, { id }, { models }) {
       return models.dog.findByPk(id);
     },
+    async allDogs(root, { id }, { models }) {
+      return models.dog.findAll();
+    },
     async chatMessage(root, { id }, { models }) {
       return models.chatMessage.findBy();
     },

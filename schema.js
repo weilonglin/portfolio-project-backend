@@ -50,6 +50,7 @@ const typeDefs = gql`
     message: String
     userId: Int
     recipientId: Int
+    recipientName: String
   }
 
   type Query {
@@ -59,6 +60,7 @@ const typeDefs = gql`
     joinTableLike(id: Int!): JoinTableLike
     tag(id: Int): Tag
     joinTableTag(id: Int): JoinTableTag
+    allDogs: [Dog]
   }
 `;
 
