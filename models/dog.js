@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       dog.belongsTo(models.user, { as: "owner" });
 
       dog.belongsToMany(models.tag, {
-        as: "tagName",
         through: "joinTableTags",
+
         foreignKey: "dogId",
       });
     }

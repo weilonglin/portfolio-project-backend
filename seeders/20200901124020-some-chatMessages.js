@@ -7,6 +7,7 @@ module.exports = {
       [
         {
           recipientId: 2,
+          recipientName: "leo77",
           message: "Hello, this is a test",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -14,6 +15,7 @@ module.exports = {
         },
         {
           recipientId: 3,
+          recipientName: "test",
           message: "Hello, this is a test",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -21,6 +23,7 @@ module.exports = {
         },
         {
           recipientId: 4,
+          recipientName: "jojo33",
           message: "Hello, this is a test",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -28,6 +31,7 @@ module.exports = {
         },
         {
           recipientId: 5,
+          recipientName: "bo12",
           message: "Hello, this is a test",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -35,6 +39,7 @@ module.exports = {
         },
         {
           recipientId: 1,
+          recipientName: "Betty66",
           message: "Hello, this is a test",
           createdAt: new Date(),
           updatedAt: new Date(),

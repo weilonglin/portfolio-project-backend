@@ -10,6 +10,10 @@ module.exports = {
       },
       tagId: {
         type: Sequelize.INTEGER,
+        references: {
+          model: "tags",
+          key: "id",
+        },
       },
       dogId: {
         type: Sequelize.INTEGER,
