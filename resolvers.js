@@ -3,7 +3,10 @@ const joinTableLike = require("./models/joinTableLike");
 const jointabletag = require("./models/jointabletag");
 const tag = require("./models/tag");
 const { user } = require("./models");
-const { PubSub } = require("apollo-server");
+const { PubSub, UserInputError } = require("apollo-server");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("./config/secret");
 
 const pubsub = new PubSub();
 const subscribers = [];
@@ -29,6 +32,49 @@ const resolvers = {
     async joinTableTag(root, { id }, { models }) {
       return models.joinTableTag.findBy();
     },
+    login: async (_, args, { models }) => {
+      const { userName, password } = args;
+      let errors = {};
+
+      try {
+        if (userName.trim() === "")
+          errors.userName = "username must not be empty";
+        if (password === "") errors.password = "password must not be empty";
+
+        if (Object.keys(errors).length > 0) {
+          throw new UserInputError("bad input", { errors });
+        }
+
+        const user = await models.user.findOne({
+          where: { userName },
+        });
+
+        if (!user) {
+          errors.userName = "user not found";
+          throw new UserInputError("user not found", { errors });
+        }
+
+        const correctPassword = await bcrypt.compare(password, user.password);
+
+        if (!correctPassword) {
+          errors.password = "password is incorrect";
+          throw new UserInputError("password is incorrect", { errors });
+        }
+
+        const token = jwt.sign({ userName }, JWT_SECRET, {
+          expiresIn: 60 * 60,
+        });
+
+        return {
+          ...user.toJSON(),
+          createdAt: user.createdAt.toISOString(),
+          token,
+        };
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
   },
 
   Mutation: {
@@ -52,6 +98,47 @@ const resolvers = {
       } catch (err) {
         console.log(err);
         throw err;
+      }
+    },
+    register: async (_, args, { models }) => {
+      let { full_name, userName, email, password, address, city } = args;
+      let errors = {};
+
+      try {
+        // Validate input data
+        if (full_name.trim() === "")
+          errors.full_name = "full_name must not be empty";
+        if (email.trim() === "") errors.email = "email must not be empty";
+        if (userName.trim() === "")
+          errors.userName = "username must not be empty";
+        if (password.trim() === "")
+          errors.password = "password must not be empty";
+        if (address.trim() === "") errors.address = "address must not be empty";
+        if (city.trim() === "") errors.city = "city must not be empty";
+
+        password = await bcrypt.hash(password, 6);
+
+        const user = await models.user.create({
+          full_name,
+          userName,
+          email,
+          password,
+          address,
+          city,
+        });
+
+        // Return user
+        return user;
+      } catch (err) {
+        console.log(err);
+        if (err.userName === "SequelizeUniqueConstraintError") {
+          err.errors.forEach(
+            (e) => (errors[e.path] = `${e.path} is already taken`)
+          );
+        } else if (err.userName === "SequelizeValidationError") {
+          err.errors.forEach((e) => (errors[e.path] = e.message));
+        }
+        throw new UserInputError("Bad input", { errors });
       }
     },
   },

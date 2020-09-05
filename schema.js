@@ -14,6 +14,7 @@ const typeDefs = gql`
     recipient: [ChatMessage]
     dogLike: [JoinTableLike]
     userLike: [JoinTableLike]
+    token: String
   }
 
   type Dog {
@@ -61,6 +62,7 @@ const typeDefs = gql`
     tag(id: Int): Tag
     joinTableTag(id: Int): JoinTableTag
     allDogs: [Dog]
+    login(userName: String!, password: String!): User!
   }
 
   type Mutation {
@@ -71,6 +73,15 @@ const typeDefs = gql`
       recipientId: Int!
       recipientName: String!
     ): ChatMessage
+    register(
+      id: Int
+      full_name: String
+      userName: String
+      email: String
+      password: String
+      address: String
+      city: String
+    ): User
   }
   type Subscription {
     chatMessage: [ChatMessage!]

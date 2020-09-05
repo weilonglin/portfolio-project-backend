@@ -7,8 +7,8 @@ const corsMiddleWare = require("cors");
 const models = require("./models");
 const typeDefs = require("./schema");
 const resolvers = require("./resolvers");
-const ws = require("ws");
-const { WebSocketLink } = require("@apollo/client/link/ws");
+// const ws = require("ws");
+// const { WebSocketLink } = require("@apollo/client/link/ws");
 const { PubSub } = require("apollo-server");
 
 const httpServer = createServer(app);
@@ -18,13 +18,13 @@ app.use(express.json());
 
 app.use(corsMiddleWare());
 
-const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000/graphql`,
-  options: {
-    reconnect: true,
-  },
-  webSocketImpl: ws,
-});
+// const wsLink = new WebSocketLink({
+//   uri: `ws://localhost:4000/graphql`,
+//   options: {
+//     reconnect: true,
+//   },
+//   webSocketImpl: ws,
+// });
 
 const server = new ApolloServer({
   typeDefs,
