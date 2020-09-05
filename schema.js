@@ -62,6 +62,19 @@ const typeDefs = gql`
     joinTableTag(id: Int): JoinTableTag
     allDogs: [Dog]
   }
+
+  type Mutation {
+    sendMessage(
+      id: Int
+      userId: Int!
+      message: String!
+      recipientId: Int!
+      recipientName: String!
+    ): ChatMessage
+  }
+  type Subscription {
+    chatMessage: [ChatMessage!]
+  }
 `;
 
 module.exports = typeDefs;

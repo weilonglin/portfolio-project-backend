@@ -1,7 +1,13 @@
-const chatmessage = require("./models/chatmessage");
+const { chatMessage } = require("./models/chatmessage");
 const joinTableLike = require("./models/joinTableLike");
 const jointabletag = require("./models/jointabletag");
 const tag = require("./models/tag");
+const { user } = require("./models");
+const { PubSub } = require("apollo-server");
+
+const pubsub = new PubSub();
+const subscribers = [];
+const onMessagesUpdates = (fn) => subscribers.push(fn);
 
 const resolvers = {
   Query: {
@@ -24,6 +30,32 @@ const resolvers = {
       return models.joinTableTag.findBy();
     },
   },
+
+  Mutation: {
+    sendMessage: async (
+      parent,
+      { userId, message, recipientName, recipientId },
+      { models }
+    ) => {
+      try {
+        const id = models.chatMessage.length;
+        console.log("id lenht", id);
+        const Message = await models.chatMessage.create({
+          id,
+          userId,
+          message,
+          recipientName,
+          recipientId,
+        });
+        subscribers.forEach((fn) => fn());
+        return Message;
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
+  },
+
   User: {
     async dogs(dog) {
       return dog.getOwner();
