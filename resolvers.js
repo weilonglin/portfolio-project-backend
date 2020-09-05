@@ -93,7 +93,11 @@ const resolvers = {
           recipientName,
           recipientId,
         });
+
         subscribers.forEach((fn) => fn());
+        pubsub.publish("newMessage", {
+          newMessage: Message,
+        });
         return Message;
       } catch (err) {
         console.log(err);
@@ -140,6 +144,12 @@ const resolvers = {
         }
         throw new UserInputError("Bad input", { errors });
       }
+    },
+  },
+
+  Subscription: {
+    newMessage: {
+      subscribe: () => pubsub.asyncIterator(["newMessage"]),
     },
   },
 

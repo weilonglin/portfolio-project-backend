@@ -3,10 +3,10 @@ const { gql } = require("apollo-server");
 const typeDefs = gql`
   type User {
     id: Int
-    full_name: String
-    userName: String
-    email: String
-    password: String
+    full_name: String!
+    userName: String!
+    email: String!
+    password: String!
     address: String
     city: String
     dogs: [Dog]
@@ -84,7 +84,7 @@ const typeDefs = gql`
     ): User
   }
   type Subscription {
-    chatMessage: [ChatMessage!]
+    newMessage: ChatMessage
   }
 `;
 
