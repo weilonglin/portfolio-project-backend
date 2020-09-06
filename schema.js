@@ -23,6 +23,7 @@ const typeDefs = gql`
     gender: String
     imageUrl: String
     tagLine: String
+    ownerId: String
     owner: User
     tag: [Tag]
   }
@@ -75,13 +76,20 @@ const typeDefs = gql`
     ): ChatMessage
     register(
       id: Int
-      full_name: String
-      userName: String
-      email: String
-      password: String
-      address: String
-      city: String
+      full_name: String!
+      userName: String!
+      email: String!
+      password: String!
+      address: String!
+      city: String!
     ): User
+    registerDog(
+      name: String!
+      gender: String!
+      imageUrl: String!
+      tagLine: String!
+      ownerId: Int!
+    ): Dog
   }
   type Subscription {
     newMessage: ChatMessage

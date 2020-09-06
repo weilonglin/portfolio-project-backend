@@ -145,6 +145,31 @@ const resolvers = {
         throw new UserInputError("Bad input", { errors });
       }
     },
+    registerDog: async (_, args, { models }) => {
+      let { name, gender, imageUrl, tagLine, ownerId } = args;
+      let errors = {};
+
+      try {
+        if (name.trim() === "") errors.name = "name must not be empty";
+        if (gender.trim() === "") errors.gender = "gender must not be empty";
+        if (imageUrl.trim() === "")
+          errors.imageUrl = "imageUrl must not be empty";
+        if (tagLine.trim() === "") errors.tagLine = "tagLine must not be empty";
+
+        const dog = await models.dog.create({
+          name,
+          gender,
+          imageUrl,
+          tagLine,
+          ownerId,
+        });
+
+        // Return user
+        return dog;
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 
   Subscription: {
