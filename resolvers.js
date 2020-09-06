@@ -177,8 +177,7 @@ const resolvers = {
     chatMessage: {
       subscribe: withFilter(
         () => pubsub.asyncIterator("chatMessage"),
-        (payload, args) => payload.userId === args.userId,
-        (payload, args) => payload.recipientId === args.recipientId
+        (payload, args) => payload.userId === args.userId
       ),
     },
   },
