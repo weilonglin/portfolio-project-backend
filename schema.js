@@ -92,7 +92,7 @@ const typeDefs = gql`
     ): Dog
   }
   type Subscription {
-    newMessage: ChatMessage
+    chatMessage(userId: Int!, recipientId: Int!): ChatMessage
   }
 `;
 

@@ -18,14 +18,6 @@ app.use(express.json());
 
 app.use(corsMiddleWare());
 
-// const wsLink = new WebSocketLink({
-//   uri: `ws://localhost:4000/graphql`,
-//   options: {
-//     reconnect: true,
-//   },
-//   webSocketImpl: ws,
-// });
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,

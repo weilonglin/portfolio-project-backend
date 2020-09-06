@@ -3,7 +3,7 @@ const joinTableLike = require("./models/joinTableLike");
 const jointabletag = require("./models/jointabletag");
 const tag = require("./models/tag");
 const { user } = require("./models");
-const { PubSub, UserInputError } = require("apollo-server");
+const { PubSub, UserInputError, withFilter } = require("apollo-server");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("./config/secret");
@@ -85,7 +85,7 @@ const resolvers = {
     ) => {
       try {
         const id = models.chatMessage.length;
-        console.log("id lenht", id);
+
         const Message = await models.chatMessage.create({
           id,
           userId,
@@ -95,8 +95,9 @@ const resolvers = {
         });
 
         subscribers.forEach((fn) => fn());
-        pubsub.publish("newMessage", {
-          newMessage: Message,
+        pubsub.publish("chatMessage", {
+          userId,
+          chatMessage: Message,
         });
         return Message;
       } catch (err) {
@@ -173,8 +174,12 @@ const resolvers = {
   },
 
   Subscription: {
-    newMessage: {
-      subscribe: () => pubsub.asyncIterator(["newMessage"]),
+    chatMessage: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator("chatMessage"),
+        (payload, args) => payload.userId === args.userId,
+        (payload, args) => payload.recipientId === args.recipientId
+      ),
     },
   },
 
