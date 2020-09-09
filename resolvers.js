@@ -7,7 +7,7 @@ const { PubSub, UserInputError, withFilter } = require("apollo-server");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("./config/secret");
-
+const { Op } = require("sequelize");
 const pubsub = new PubSub();
 const subscribers = [];
 const onMessagesUpdates = (fn) => subscribers.push(fn);
@@ -17,6 +17,7 @@ const resolvers = {
     async user(root, { id }, { models }) {
       return models.user.findByPk(id);
     },
+
     async dog(root, { id }, { models }) {
       return models.dog.findByPk(id);
     },
@@ -24,8 +25,15 @@ const resolvers = {
       return models.dog.findAll();
     },
     async chatMessage(root, { id }, { models }) {
-      return models.chatMessage.findBy();
+      return models.chatMessage.findAll({
+        where: {
+          [Op.or]: [{ userId: id }, { recipientId: id }],
+        },
+
+        order: [["createdAt", "DESC"]],
+      });
     },
+
     async joinTableLike(root, { id }, { models }) {
       return models.joinTableLike.findBy();
     },
@@ -60,9 +68,10 @@ const resolvers = {
           errors.password = "password is incorrect";
           throw new UserInputError("password is incorrect", { errors });
         }
+        const id = user.id;
 
-        const token = jwt.sign({ userName }, JWT_SECRET, {
-          expiresIn: 60 * 60,
+        const token = jwt.sign({ id }, JWT_SECRET, {
+          expiresIn: 60 * 600,
         });
 
         return {
@@ -80,7 +89,7 @@ const resolvers = {
   Mutation: {
     sendMessage: async (
       parent,
-      { userId, message, recipientName, recipientId },
+      { userId, message, recipientName, recipientId, imageUrl },
       { models }
     ) => {
       try {
@@ -92,12 +101,17 @@ const resolvers = {
           message,
           recipientName,
           recipientId,
+          imageUrl,
         });
 
         subscribers.forEach((fn) => fn());
         pubsub.publish("chatMessage", {
+          id,
           userId,
           chatMessage: Message,
+          recipientName,
+          recipientId,
+          imageUrl,
         });
         return Message;
       } catch (err) {
@@ -177,7 +191,8 @@ const resolvers = {
     chatMessage: {
       subscribe: withFilter(
         () => pubsub.asyncIterator("chatMessage"),
-        (payload, args) => payload.userId === args.userId
+        (payload, args) =>
+          payload.userId === args.userId || payload.recipientId === args.userId
       ),
     },
   },
