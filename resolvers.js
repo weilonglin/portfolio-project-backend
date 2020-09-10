@@ -17,12 +17,19 @@ const resolvers = {
     async user(root, { id }, { models }) {
       return models.user.findByPk(id);
     },
+    async allUsers(root, { id }, { models }) {
+      return models.user.findAll();
+    },
 
     async dog(root, { id }, { models }) {
       return models.dog.findByPk(id);
     },
     async allDogs(root, { id }, { models }) {
-      return models.dog.findAll();
+      return models.dog.findAll({
+        where: {
+          ownerId: id,
+        },
+      });
     },
     async chatMessage(root, { id }, { models }) {
       return models.chatMessage.findAll({
@@ -30,7 +37,7 @@ const resolvers = {
           [Op.or]: [{ userId: id }, { recipientId: id }],
         },
 
-        order: [["createdAt", "DESC"]],
+        order: [["createdAt", "ASC"]],
       });
     },
 
@@ -89,7 +96,14 @@ const resolvers = {
   Mutation: {
     sendMessage: async (
       parent,
-      { userId, message, recipientName, recipientId, imageUrl },
+      {
+        userId,
+        message,
+        recipientName,
+        recipientId,
+        imageUrl,
+        imageUrlRecipient,
+      },
       { models }
     ) => {
       try {
@@ -102,6 +116,7 @@ const resolvers = {
           recipientName,
           recipientId,
           imageUrl,
+          imageUrlRecipient,
         });
 
         subscribers.forEach((fn) => fn());
@@ -112,6 +127,7 @@ const resolvers = {
           recipientName,
           recipientId,
           imageUrl,
+          imageUrlRecipient,
         });
         return Message;
       } catch (err) {
@@ -120,7 +136,15 @@ const resolvers = {
       }
     },
     register: async (_, args, { models }) => {
-      let { full_name, userName, email, password, address, city } = args;
+      let {
+        full_name,
+        userName,
+        email,
+        password,
+        address,
+        city,
+        imageUrl,
+      } = args;
       let errors = {};
 
       try {
@@ -144,6 +168,7 @@ const resolvers = {
           password,
           address,
           city,
+          imageUrl,
         });
 
         // Return user
@@ -218,6 +243,7 @@ const resolvers = {
     //   return user.getLikes({ joinTableAttributes: ["liked"] });
     // },
   },
+
   Dog: {
     async owner(user) {
       return user.getOwner();

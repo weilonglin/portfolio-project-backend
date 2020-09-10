@@ -3,10 +3,10 @@ const { gql } = require("apollo-server");
 const typeDefs = gql`
   type User {
     id: Int
-    full_name: String!
-    userName: String!
-    email: String!
-    password: String!
+    full_name: String
+    userName: String
+    email: String
+    password: String
     imageUrl: String
     address: String
     city: String
@@ -16,6 +16,11 @@ const typeDefs = gql`
     dogLike: [JoinTableLike]
     userLike: [JoinTableLike]
     token: String
+  }
+  type allUsers {
+    userName: String
+
+    imageUrl: String
   }
   type getUser {
     id: Int
@@ -66,6 +71,7 @@ const typeDefs = gql`
     id: Int
     message: String
     imageUrl: String
+    imageUrlRecipient: String
     userId: Int
     recipientId: Int
     recipientName: String
@@ -74,13 +80,14 @@ const typeDefs = gql`
 
   type Query {
     user(id: Int!): User!
+    allUsers: [User]
     getUser: [User]!
     dog(id: Int!): Dog
     chatMessage(id: Int!): [ChatMessage]!
     joinTableLike(id: Int!): JoinTableLike
     tag(id: Int): Tag
     joinTableTag(id: Int): JoinTableTag
-    allDogs: [Dog]
+    allDogs(id: Int): [Dog]
     login(userName: String!, password: String!): User!
   }
 
@@ -101,6 +108,7 @@ const typeDefs = gql`
       password: String!
       address: String!
       city: String!
+      imageUrl: String!
     ): User
     registerDog(
       name: String!
