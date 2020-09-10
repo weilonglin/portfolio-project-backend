@@ -87,7 +87,8 @@ const typeDefs = gql`
     joinTableLike(id: Int!): JoinTableLike
     tag(id: Int): Tag
     joinTableTag(id: Int): JoinTableTag
-    allDogs(id: Int): [Dog]
+    allDogs: [Dog]
+    allDogsUser(id: Int): [Dog]
     login(userName: String!, password: String!): User!
   }
 

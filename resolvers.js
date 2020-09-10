@@ -25,6 +25,9 @@ const resolvers = {
       return models.dog.findByPk(id);
     },
     async allDogs(root, { id }, { models }) {
+      return models.dog.findAll();
+    },
+    async allDogsUser(root, { id }, { models }) {
       return models.dog.findAll({
         where: {
           ownerId: id,
