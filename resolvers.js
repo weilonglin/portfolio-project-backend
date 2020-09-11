@@ -7,7 +7,7 @@ const { PubSub, UserInputError, withFilter } = require("apollo-server");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("./config/secret");
-
+const { Op } = require("sequelize");
 const pubsub = new PubSub();
 const subscribers = [];
 const onMessagesUpdates = (fn) => subscribers.push(fn);
@@ -17,15 +17,33 @@ const resolvers = {
     async user(root, { id }, { models }) {
       return models.user.findByPk(id);
     },
+    async allUsers(root, { id }, { models }) {
+      return models.user.findAll();
+    },
+
     async dog(root, { id }, { models }) {
       return models.dog.findByPk(id);
     },
     async allDogs(root, { id }, { models }) {
       return models.dog.findAll();
     },
-    async chatMessage(root, { id }, { models }) {
-      return models.chatMessage.findBy();
+    async allDogsUser(root, { id }, { models }) {
+      return models.dog.findAll({
+        where: {
+          ownerId: id,
+        },
+      });
     },
+    async chatMessage(root, { id }, { models }) {
+      return models.chatMessage.findAll({
+        where: {
+          [Op.or]: [{ userId: id }, { recipientId: id }],
+        },
+
+        order: [["createdAt", "ASC"]],
+      });
+    },
+
     async joinTableLike(root, { id }, { models }) {
       return models.joinTableLike.findBy();
     },
@@ -60,9 +78,10 @@ const resolvers = {
           errors.password = "password is incorrect";
           throw new UserInputError("password is incorrect", { errors });
         }
+        const id = user.id;
 
-        const token = jwt.sign({ userName }, JWT_SECRET, {
-          expiresIn: 60 * 60,
+        const token = jwt.sign({ id }, JWT_SECRET, {
+          expiresIn: 60 * 600,
         });
 
         return {
@@ -80,7 +99,14 @@ const resolvers = {
   Mutation: {
     sendMessage: async (
       parent,
-      { userId, message, recipientName, recipientId },
+      {
+        userId,
+        message,
+        recipientName,
+        recipientId,
+        imageUrl,
+        imageUrlRecipient,
+      },
       { models }
     ) => {
       try {
@@ -92,12 +118,19 @@ const resolvers = {
           message,
           recipientName,
           recipientId,
+          imageUrl,
+          imageUrlRecipient,
         });
 
         subscribers.forEach((fn) => fn());
         pubsub.publish("chatMessage", {
+          id,
           userId,
           chatMessage: Message,
+          recipientName,
+          recipientId,
+          imageUrl,
+          imageUrlRecipient,
         });
         return Message;
       } catch (err) {
@@ -106,7 +139,15 @@ const resolvers = {
       }
     },
     register: async (_, args, { models }) => {
-      let { full_name, userName, email, password, address, city } = args;
+      let {
+        full_name,
+        userName,
+        email,
+        password,
+        address,
+        city,
+        imageUrl,
+      } = args;
       let errors = {};
 
       try {
@@ -130,6 +171,7 @@ const resolvers = {
           password,
           address,
           city,
+          imageUrl,
         });
 
         // Return user
@@ -177,7 +219,8 @@ const resolvers = {
     chatMessage: {
       subscribe: withFilter(
         () => pubsub.asyncIterator("chatMessage"),
-        (payload, args) => payload.userId === args.userId
+        (payload, args) =>
+          payload.userId === args.userId || payload.recipientId === args.userId
       ),
     },
   },
@@ -203,6 +246,7 @@ const resolvers = {
     //   return user.getLikes({ joinTableAttributes: ["liked"] });
     // },
   },
+
   Dog: {
     async owner(user) {
       return user.getOwner();

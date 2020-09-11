@@ -3,10 +3,11 @@ const { gql } = require("apollo-server");
 const typeDefs = gql`
   type User {
     id: Int
-    full_name: String!
-    userName: String!
-    email: String!
-    password: String!
+    full_name: String
+    userName: String
+    email: String
+    password: String
+    imageUrl: String
     address: String
     city: String
     dogs: [Dog]
@@ -16,7 +17,25 @@ const typeDefs = gql`
     userLike: [JoinTableLike]
     token: String
   }
-
+  type allUsers {
+    userName: String
+    id: Int!
+    imageUrl: String
+  }
+  type getUser {
+    id: Int
+    full_name: String
+    userName: String
+    address: String
+    city: String
+    dogs: [Dog]
+    sender: [ChatMessage]
+    recipient: [ChatMessage]
+    dogLike: [JoinTableLike]
+    userLike: [JoinTableLike]
+    token: String
+    allMessage: ChatMessage
+  }
   type Dog {
     id: Int
     name: String
@@ -31,6 +50,7 @@ const typeDefs = gql`
   type Tag {
     id: Int
     name: String
+    createdAt: Int
   }
 
   type JoinTableTag {
@@ -50,19 +70,25 @@ const typeDefs = gql`
   type ChatMessage {
     id: Int
     message: String
+    imageUrl: String
+    imageUrlRecipient: String
     userId: Int
     recipientId: Int
     recipientName: String
+    createdAt: String!
   }
 
   type Query {
-    user(id: Int!): User
+    user(id: Int!): User!
+    allUsers: [User]
+    getUser: [User]!
     dog(id: Int!): Dog
-    chatMessage(id: Int!): ChatMessage
+    chatMessage(id: Int!): [ChatMessage]!
     joinTableLike(id: Int!): JoinTableLike
     tag(id: Int): Tag
     joinTableTag(id: Int): JoinTableTag
     allDogs: [Dog]
+    allDogsUser(id: Int): [Dog]
     login(userName: String!, password: String!): User!
   }
 
@@ -71,6 +97,7 @@ const typeDefs = gql`
       id: Int
       userId: Int!
       message: String!
+      imageUrl: String
       recipientId: Int!
       recipientName: String!
     ): ChatMessage
@@ -82,6 +109,7 @@ const typeDefs = gql`
       password: String!
       address: String!
       city: String!
+      imageUrl: String!
     ): User
     registerDog(
       name: String!
@@ -92,7 +120,7 @@ const typeDefs = gql`
     ): Dog
   }
   type Subscription {
-    chatMessage(userId: Int!): ChatMessage
+    chatMessage(userId: Int!, recipientId: Int!): ChatMessage
   }
 `;
 
