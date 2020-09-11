@@ -1,6 +1,6 @@
 const { chatMessage } = require("./models/chatmessage");
 const joinTableLike = require("./models/joinTableLike");
-const jointabletag = require("./models/jointabletag");
+
 const tag = require("./models/tag");
 const { user } = require("./models");
 const { PubSub, UserInputError, withFilter } = require("apollo-server");
