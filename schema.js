@@ -19,7 +19,7 @@ const typeDefs = gql`
   }
   type allUsers {
     userName: String
-
+    id: Int!
     imageUrl: String
   }
   type getUser {
