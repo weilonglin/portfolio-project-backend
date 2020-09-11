@@ -1,4 +1,4 @@
 release: npx sequelize-cli db:migrate
 
-release: npx sequelize-cli db:seed:all
+release: npx run resetDB
 web: node index.js
