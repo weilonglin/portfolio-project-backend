@@ -6,7 +6,8 @@
     },
     "url": "postgres://grxzckdf:hYsdYGdMzkvt_eez9L7dWN10tdRaGHrO@balarama.db.elephantsql.com:5432/grxzckdf",
     "dialect": "postgres",
-    "operatorsAliases": "0"
+    "operatorsAliases": "0",
+    "use_env_variable": "DATABASE_URL"
   },
   "test": {
     "username": "root",
