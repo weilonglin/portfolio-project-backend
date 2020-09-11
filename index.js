@@ -11,22 +11,22 @@ const resolvers = require("./resolvers");
 // const { WebSocketLink } = require("@apollo/client/link/ws");
 const { PubSub } = require("apollo-server");
 const cors = require("cors");
-app.use(cors());
-
-const httpServer = createServer(app);
-
 const pubsub = new PubSub();
-app.use(express.json());
-
-app.use(corsMiddleWare());
-
+const httpServer = createServer(app);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: { models, pubsub },
+  playground: true,
 });
 
 server.applyMiddleware({ app });
+app.use(cors());
+
+app.use(express.json());
+
+app.use(corsMiddleWare());
+
 server.installSubscriptionHandlers(httpServer);
 
 httpServer.listen(PORT, () => {
