@@ -6,8 +6,7 @@
     },
     "url": "postgres://grxzckdf:hYsdYGdMzkvt_eez9L7dWN10tdRaGHrO@balarama.db.elephantsql.com:5432/grxzckdf",
     "dialect": "postgres",
-    "operatorsAliases": "0",
-    "use_env_variable": "DATABASE_URL"
+    "operatorsAliases": "0"
   },
   "test": {
     "username": "root",
@@ -17,6 +16,13 @@
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "DATABASE_URL"
+    "use_env_variable": "DATABASE_URL",
+    "pool": {
+      "max": 3,
+      "min": 0
+    },
+    "url": "postgres://grxzckdf:hYsdYGdMzkvt_eez9L7dWN10tdRaGHrO@balarama.db.elephantsql.com:5432/grxzckdf",
+    "dialect": "postgres",
+    "operatorsAliases": "0"
   }
 }
