@@ -10,6 +10,8 @@ const resolvers = require("./resolvers");
 // const ws = require("ws");
 // const { WebSocketLink } = require("@apollo/client/link/ws");
 const { PubSub } = require("apollo-server");
+const cors = require("cors");
+app.use(cors());
 
 const httpServer = createServer(app);
 
