@@ -2,7 +2,7 @@
 
 [Click here to view frontend repo](https://github.com/weilonglin/portfolio-project-frontend)
 
-<img width="500px" src="./homepage.png"/>
+<img width="500px" src="https://github.com/weilonglin/portfolio-project-frontend/blob/development/homepage.png"/>
 
 ### Tech
 
