@@ -2,22 +2,24 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class joinTableTag extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      joinTableTag.belongsTo(models.tag, {
-        foreignKey: "tagId",
-      });
-      joinTableTag.belongsTo(models.dog, { foreignKey: "dogId" });
-    }
+    static associate(models) {}
   }
   joinTableTag.init(
     {
-      tagId: DataTypes.INTEGER,
-      dogId: DataTypes.INTEGER,
+      tagId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "tags",
+          key: "id",
+        },
+      },
+      dogId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "dogs",
+          key: "id",
+        },
+      },
     },
     {
       sequelize,

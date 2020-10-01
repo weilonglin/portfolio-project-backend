@@ -25,13 +25,30 @@ const resolvers = {
       return models.dog.findByPk(id);
     },
     async allDogs(root, { id }, { models }) {
-      return models.dog.findAll();
+      return models.dog.findAll({
+        include: [
+          {
+            model: models.tag,
+            as: "tags",
+          },
+          {
+            model: models.user,
+            as: "owner",
+          },
+        ],
+      });
     },
     async allDogsUser(root, { id }, { models }) {
       return models.dog.findAll({
         where: {
           ownerId: id,
         },
+        include: [
+          {
+            model: models.tag,
+            as: "tags",
+          },
+        ],
       });
     },
     async chatMessage(root, { id }, { models }) {
@@ -39,8 +56,23 @@ const resolvers = {
         where: {
           [Op.or]: [{ userId: id }, { recipientId: id }],
         },
-
-        order: [["createdAt", "ASC"]],
+        include: [
+          {
+            model: models.user,
+            as: "sender",
+          },
+          {
+            model: models.user,
+            as: "recipient",
+          },
+        ],
+      });
+    },
+    async userChat(root, { id }, { models }) {
+      const chats = models.chatMessage.findAll({
+        where: {
+          [Op.or]: [{ userId: id }, { recipientId: id }],
+        },
       });
     },
 
@@ -229,12 +261,12 @@ const resolvers = {
     async dogs(dog) {
       return dog.getOwner();
     },
-    async sender(chatMessage) {
-      return chatMessage.getSender();
-    },
-    async recipient(message) {
-      return message.getRecipient();
-    },
+    // async sender(chatMessage) {
+    //   return chatMessage.getSender();
+    // },
+    // async recipient(message) {
+    //   return message.getRecipient();
+    // },
     async dogLike(dog) {
       return dog.getDogLike();
     },
@@ -248,22 +280,29 @@ const resolvers = {
   },
 
   Dog: {
-    async owner(user) {
-      return user.getOwner();
-    },
-    async tag(dog) {
-      console.log("dog", dog);
-      const x = await dog.getTags();
-      console.log("XXXXXXXX", x);
-      return x;
-    },
-
+    // async owner(user) {
+    //   return user.getOwner();
+    // },
+    // async tag(dog) {
+    //   console.log("dog", dog);
+    //   const x = await dog.getTags();
+    //   console.log("XXXXXXXX", x);
+    //   return x;
+    // },
     // async userLike(dog) {
     //   const x = await dog.getLikes({ joinTableAttributes: ["liked"] });
     //   console.log("XXXXXXXX", x);
     //   return x;
     // },
   },
+  // ChatMessage: {
+  //   async sender(user) {
+  //     return user.getSender();
+  //   },
+  //   async recipient(user) {
+  //     return user.getRecipient();
+  //   },
+  // },
 };
 
 module.exports = resolvers;
