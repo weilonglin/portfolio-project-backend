@@ -145,7 +145,6 @@ const resolvers = {
         const id = models.chatMessage.length;
 
         const Message = await models.chatMessage.create({
-          id,
           userId,
           message,
           recipientName,
@@ -154,17 +153,30 @@ const resolvers = {
           imageUrlRecipient,
         });
 
+        const newMessage = await models.chatMessage.findOne({
+          where: {
+            id: Message.id,
+          },
+          include: [
+            {
+              model: models.user,
+              as: "sender",
+            },
+            {
+              model: models.user,
+              as: "recipient",
+            },
+          ],
+        });
+
+        console.log("message,", newMessage);
         subscribers.forEach((fn) => fn());
         pubsub.publish("chatMessage", {
-          id,
           userId,
-          chatMessage: Message,
-          recipientName,
           recipientId,
-          imageUrl,
-          imageUrlRecipient,
+          chatMessage: newMessage,
         });
-        return Message;
+        return newMessage;
       } catch (err) {
         console.log(err);
         throw err;
