@@ -45,6 +45,7 @@ const typeDefs = gql`
     ownerId: String
     owner: User
     tags: [Tag]
+    dogLike: [JoinTableLike]
   }
 
   type Tag {

@@ -1,8 +1,3 @@
-const { chatMessage } = require("./models/chatmessage");
-const joinTableLike = require("./models/joinTableLike");
-
-const tag = require("./models/tag");
-const { user } = require("./models");
 const { PubSub, UserInputError, withFilter } = require("apollo-server");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -10,7 +5,6 @@ const { JWT_SECRET } = require("./config/secret");
 const { Op } = require("sequelize");
 const pubsub = new PubSub();
 const subscribers = [];
-const onMessagesUpdates = (fn) => subscribers.push(fn);
 
 const resolvers = {
   Query: {
@@ -48,6 +42,10 @@ const resolvers = {
             model: models.tag,
             as: "tags",
           },
+          {
+            model: models.joinTableLike,
+            as: "dogLike",
+          },
         ],
       });
     },
@@ -66,6 +64,7 @@ const resolvers = {
             as: "recipient",
           },
         ],
+        order: [["createdAt", "ASC"]]
       });
     },
     async userChat(root, { id }, { models }) {
@@ -169,7 +168,6 @@ const resolvers = {
           ],
         });
 
-        console.log("message,", newMessage);
         subscribers.forEach((fn) => fn());
         pubsub.publish("chatMessage", {
           userId,
