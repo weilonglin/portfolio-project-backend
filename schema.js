@@ -44,7 +44,8 @@ const typeDefs = gql`
     tagLine: String
     ownerId: String
     owner: User
-    tag: [Tag]
+    tags: [Tag]
+    dogLike: [JoinTableLike]
   }
 
   type Tag {
@@ -76,6 +77,8 @@ const typeDefs = gql`
     recipientId: Int
     recipientName: String
     createdAt: String!
+    sender: User
+    recipient: User
   }
 
   type Query {
@@ -90,6 +93,7 @@ const typeDefs = gql`
     allDogs: [Dog]
     allDogsUser(id: Int): [Dog]
     login(userName: String!, password: String!): User!
+    userChat(id: Int!): [ChatMessage]
   }
 
   type Mutation {

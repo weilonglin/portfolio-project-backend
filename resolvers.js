@@ -1,8 +1,3 @@
-const { chatMessage } = require("./models/chatmessage");
-const joinTableLike = require("./models/joinTableLike");
-
-const tag = require("./models/tag");
-const { user } = require("./models");
 const { PubSub, UserInputError, withFilter } = require("apollo-server");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -10,7 +5,6 @@ const { JWT_SECRET } = require("./config/secret");
 const { Op } = require("sequelize");
 const pubsub = new PubSub();
 const subscribers = [];
-const onMessagesUpdates = (fn) => subscribers.push(fn);
 
 const resolvers = {
   Query: {
@@ -25,13 +19,34 @@ const resolvers = {
       return models.dog.findByPk(id);
     },
     async allDogs(root, { id }, { models }) {
-      return models.dog.findAll();
+      return models.dog.findAll({
+        include: [
+          {
+            model: models.tag,
+            as: "tags",
+          },
+          {
+            model: models.user,
+            as: "owner",
+          },
+        ],
+      });
     },
     async allDogsUser(root, { id }, { models }) {
       return models.dog.findAll({
         where: {
           ownerId: id,
         },
+        include: [
+          {
+            model: models.tag,
+            as: "tags",
+          },
+          {
+            model: models.joinTableLike,
+            as: "dogLike",
+          },
+        ],
       });
     },
     async chatMessage(root, { id }, { models }) {
@@ -39,8 +54,24 @@ const resolvers = {
         where: {
           [Op.or]: [{ userId: id }, { recipientId: id }],
         },
-
-        order: [["createdAt", "ASC"]],
+        include: [
+          {
+            model: models.user,
+            as: "sender",
+          },
+          {
+            model: models.user,
+            as: "recipient",
+          },
+        ],
+        order: [["createdAt", "ASC"]]
+      });
+    },
+    async userChat(root, { id }, { models }) {
+      const chats = models.chatMessage.findAll({
+        where: {
+          [Op.or]: [{ userId: id }, { recipientId: id }],
+        },
       });
     },
 
@@ -113,7 +144,6 @@ const resolvers = {
         const id = models.chatMessage.length;
 
         const Message = await models.chatMessage.create({
-          id,
           userId,
           message,
           recipientName,
@@ -122,17 +152,29 @@ const resolvers = {
           imageUrlRecipient,
         });
 
+        const newMessage = await models.chatMessage.findOne({
+          where: {
+            id: Message.id,
+          },
+          include: [
+            {
+              model: models.user,
+              as: "sender",
+            },
+            {
+              model: models.user,
+              as: "recipient",
+            },
+          ],
+        });
+
         subscribers.forEach((fn) => fn());
         pubsub.publish("chatMessage", {
-          id,
           userId,
-          chatMessage: Message,
-          recipientName,
           recipientId,
-          imageUrl,
-          imageUrlRecipient,
+          chatMessage: newMessage,
         });
-        return Message;
+        return newMessage;
       } catch (err) {
         console.log(err);
         throw err;
@@ -229,12 +271,12 @@ const resolvers = {
     async dogs(dog) {
       return dog.getOwner();
     },
-    async sender(chatMessage) {
-      return chatMessage.getSender();
-    },
-    async recipient(message) {
-      return message.getRecipient();
-    },
+    // async sender(chatMessage) {
+    //   return chatMessage.getSender();
+    // },
+    // async recipient(message) {
+    //   return message.getRecipient();
+    // },
     async dogLike(dog) {
       return dog.getDogLike();
     },
@@ -248,22 +290,29 @@ const resolvers = {
   },
 
   Dog: {
-    async owner(user) {
-      return user.getOwner();
-    },
-    async tag(dog) {
-      console.log("dog", dog);
-      const x = await dog.getTags();
-      console.log("XXXXXXXX", x);
-      return x;
-    },
-
+    // async owner(user) {
+    //   return user.getOwner();
+    // },
+    // async tag(dog) {
+    //   console.log("dog", dog);
+    //   const x = await dog.getTags();
+    //   console.log("XXXXXXXX", x);
+    //   return x;
+    // },
     // async userLike(dog) {
     //   const x = await dog.getLikes({ joinTableAttributes: ["liked"] });
     //   console.log("XXXXXXXX", x);
     //   return x;
     // },
   },
+  // ChatMessage: {
+  //   async sender(user) {
+  //     return user.getSender();
+  //   },
+  //   async recipient(user) {
+  //     return user.getRecipient();
+  //   },
+  // },
 };
 
 module.exports = resolvers;
